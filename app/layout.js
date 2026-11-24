@@ -2,7 +2,7 @@ import "./globals.css";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="pt-br">
+    <html lang="pr-br">
       <body>{children}</body>
     </html>
   );
