@@ -1,0 +1,93 @@
+.header {
+    background-color: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  
+  .conteudo {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  
+  .logo {
+    font-size: 1.4rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -0.03em;
+  }
+  
+  .nav {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  
+  .link {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #475569;
+    transition: color 0.2s;
+  }
+  
+  .link:hover {
+    color: #4f46e5;
+  }
+  
+  .btnNovo {
+    background-color: #eef2ff;
+    color: #4f46e5;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    transition: background-color 0.2s;
+  }
+  
+  .btnNovo:hover {
+    background-color: #e0e7ff;
+  }
+  
+  .btnEntrar {
+    background: linear-gradient(135deg, #6366f1, #4f46e5);
+    color: #ffffff;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 0.88rem;
+    font-weight: 700;
+  }
+  
+  .usuarioBox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #334155;
+  }
+  
+  .btnSair {
+    background: none;
+    border: 1px solid #cbd5e1;
+    color: #dc2626;
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .btnSair:hover {
+    background-color: #fef2f2;
+    border-color: #fecaca;
+  }

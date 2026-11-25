@@ -1,0 +1,32 @@
+.filtroBox {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+  }
+  
+  .input,
+  .select {
+    background-color: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.95rem;
+    color: #0f172a;
+    outline: none;
+  }
+  
+  .input {
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .select {
+    min-width: 170px;
+    cursor: pointer;
+  }
+  
+  .input:focus,
+  .select:focus {
+    border-color: #6366f1;
+  }
