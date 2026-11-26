@@ -1,5 +1,5 @@
 import CardTurma from "@/components/CardTurma/CardTurma";
-import styles from "./listaturmas.module.css";
+import styles from "./Listaturmas.module.css";
 
 export default function ListaTurmas({ turmas }) {
   if (turmas.length === 0) {

@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import styles from "@/app/login/login.module.css";
+import { cadastrarUsuario, fazerLogin } from "@/lib/banco";
 import { entrar } from "@/lib/sessao";
+import styles from "./login.module.css";
 
 function Login() {
   const router = useRouter();
@@ -11,47 +12,48 @@ function Login() {
   const [erro, setErro] = useState("");
   const [sucesso, setSucesso] = useState("");
 
-  function handleLogin(event) {
-    event.preventDefault();
-    setErro("");
-
-    const dados = new FormData(event.target);
-    const email = String(dados.get("email")).trim();
-    const senha = String(dados.get("senha"));
-
-    if (email === "" || senha === "") {
-      setErro("Preencha e-mail e senha.");
-      return;
-    }
-
-    entrar(email.split("@")[0]);
-    router.replace("/");
-  }
-
-  function handleCadastro(event) {
-    event.preventDefault();
-    setErro("");
-    setSucesso("");
-
-    const dados = new FormData(event.target);
-    const nome = String(dados.get("nome")).trim();
-    const email = String(dados.get("email")).trim();
-    const senha = String(dados.get("senha"));
-
-    if (nome === "" || email === "" || senha === "") {
-      setErro("Preencha nome, e-mail e senha.");
-      return;
-    }
-
-    event.target.reset();
-    setSucesso("Conta criada! Agora faça seu login.");
-    setPainelAtivo(false);
-  }
-
   function trocarPainel(ativo) {
+    setPainelAtivo(ativo);
     setErro("");
     setSucesso("");
-    setPainelAtivo(ativo);
+  }
+
+  async function handleLogin(event) {
+    event.preventDefault();
+    setErro("");
+    setSucesso("");
+
+    const dados = new FormData(event.target);
+    const email = String(dados.get("email") || "").trim();
+    const senha = String(dados.get("senha") || "");
+
+    try {
+      const resposta = await fazerLogin({ email, senha });
+      entrar(resposta.token, resposta.nome);
+      router.replace("/");
+    } catch (e) {
+      setErro(e.message);
+    }
+  }
+
+  async function handleCadastro(event) {
+    event.preventDefault();
+    setErro("");
+    setSucesso("");
+
+    const dados = new FormData(event.target);
+    const nome = String(dados.get("nome") || "").trim();
+    const email = String(dados.get("email") || "").trim();
+    const senha = String(dados.get("senha") || "");
+
+    try {
+      await cadastrarUsuario({ nome, email, senha });
+      event.target.reset();
+      setSucesso("Conta criada! Agora faça seu login.");
+      setPainelAtivo(false);
+    } catch (e) {
+      setErro(e.message);
+    }
   }
 
   return (

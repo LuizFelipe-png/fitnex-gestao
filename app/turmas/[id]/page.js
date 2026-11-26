@@ -1,63 +1,49 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { turmasExemplo } from "@/dados/exemplo";
+import { useParams, useRouter } from "next/navigation";
+import Carregando from "@/components/Carregando/Carregando";
 import Mensagem from "@/components/Mensagem/Mensagem";
+import { buscarTurma, excluirTurma } from "@/lib/banco";
+import { useSessao } from "@/lib/sessao";
 import styles from "./detalhe.module.css";
 
 export default function DetalheTurma() {
-  const params = useParams();
+  const { id } = useParams();
   const router = useRouter();
+  const { usuario } = useSessao();
   const [turma, setTurma] = useState(null);
-  const [usuario, setUsuario] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
-    const userSalvo = localStorage.getItem("fitnex_usuario");
-    if (userSalvo) {
-      try {
-        setUsuario(JSON.parse(userSalvo));
-      } catch {
-        setUsuario(userSalvo);
-      }
-    }
+    buscarTurma(id)
+      .then((encontrada) => setTurma(encontrada))
+      .catch((e) => setErro(e.message))
+      .finally(() => setCarregando(false));
+  }, [id]);
 
-    const salvas = localStorage.getItem("fitnex_turmas");
-    const lista = salvas ? JSON.parse(salvas) : turmasExemplo;
-
-    const encontrada = lista.find((item) => String(item.id) === String(params.id));
-    setTurma(encontrada || null);
-    setCarregando(false);
-  }, [params.id]);
-
-  function handleExcluir() {
+  async function handleExcluir() {
     const confirmar = window.confirm(
       `Tem certeza que deseja excluir a turma "${turma.nome}"?`
     );
     if (!confirmar) return;
 
-    const salvas = localStorage.getItem("fitnex_turmas");
-    const lista = salvas ? JSON.parse(salvas) : turmasExemplo;
-
-    const atualizada = lista.filter((item) => String(item.id) !== String(turma.id));
-    localStorage.setItem("fitnex_turmas", JSON.stringify(atualizada));
-    router.push("/");
+    try {
+      await excluirTurma(id);
+      router.push("/");
+    } catch (e) {
+      setErro(e.message);
+    }
   }
 
-  if (carregando) {
-    return (
-      <main className={styles.container}>
-        <Mensagem tipo="info" texto="Carregando detalhes da turma..." />
-      </main>
-    );
-  }
+  if (carregando) return <Carregando />;
 
   if (!turma) {
     return (
       <main className={styles.container}>
-        <Mensagem tipo="erro" texto="Turma não encontrada." />
+        <Mensagem tipo="erro">{erro}</Mensagem>
         <Link href="/" className={styles.btnVoltar}>
           ← Voltar para turmas
         </Link>
@@ -70,6 +56,8 @@ export default function DetalheTurma() {
       <Link href="/" className={styles.btnVoltar}>
         ← Voltar para turmas
       </Link>
+
+      <Mensagem tipo="erro">{erro}</Mensagem>
 
       <section className={styles.card}>
         <div className={styles.topo}>

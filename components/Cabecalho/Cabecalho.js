@@ -3,11 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import styles from "./cabecalho.module.css";
+import { sair, useSessao } from "@/lib/sessao";
+import styles from "./Cabecalho.module.css";
 
-export default function Cabecalho({ usuario, onSair }) {
+export default function Cabecalho() {
   const router = useRouter();
   const [tema, setTema] = useState("escuro");
+  const { usuario } = useSessao();
 
   useEffect(() => {
     const temaSalvo = localStorage.getItem("fitnex_tema") || "escuro";
@@ -23,8 +25,8 @@ export default function Cabecalho({ usuario, onSair }) {
   }
 
   function handleLogout() {
-    if (onSair) onSair();
-    router.refresh();
+    sair();
+    router.push("/");
   }
 
   return (
@@ -34,11 +36,13 @@ export default function Cabecalho({ usuario, onSair }) {
           <span className={styles.logoIcone}>⚡</span>
           <span>FitNex</span>
         </Link>
-        <Link href="/modalidades">Modalidades</Link>
 
         <nav className={styles.nav}>
           <Link href="/" className={styles.link}>
             Turmas
+          </Link>
+          <Link href="/modalidades" className={styles.link}>
+            Modalidades
           </Link>
 
           <button
@@ -58,10 +62,14 @@ export default function Cabecalho({ usuario, onSair }) {
               </Link>
               <div className={styles.usuarioBox}>
                 <span className={styles.avatar}>
-                  {usuario.charAt(0).toUpperCase()}
+                  {usuario.nome?.charAt(0).toUpperCase()}
                 </span>
-                <span className={styles.nomeUsuario}>{usuario}</span>
-                <button onClick={handleLogout} className={styles.btnSair}>
+                <span className={styles.nomeUsuario}>{usuario.nome}</span>
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className={styles.btnSair}
+                >
                   Sair
                 </button>
               </div>

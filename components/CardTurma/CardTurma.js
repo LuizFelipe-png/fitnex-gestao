@@ -1,5 +1,5 @@
 import Link from "next/link";
-import styles from "./cardturma.module.css";
+import styles from "./Cardturma.module.css";
 
 export default function CardTurma({ turma }) {
   const ultimasVagas = turma.vagas <= 3;

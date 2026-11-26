@@ -2,45 +2,54 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Mensagem from "@/components/Mensagem/Mensagem";
 import styles from "./formturma.module.css";
 
-const MODALIDADES = [
-  { id: 1, nome: "Musculação" },
-  { id: 2, nome: "Pilates" },
-  { id: 3, nome: "Spinning" },
-  { id: 4, nome: "Muay Thai" },
-  { id: 5, nome: "Jiu-Jitsu" },
-  { id: 6, nome: "Funcional" },
-];
-
-export default function FormTurma({ turmaInicial = null, aoSalvar, linkCancelar = "/" }) {
+export default function FormTurma({
+  modalidades = [],
+  turmaInicial = null,
+  aoSalvar,
+  linkCancelar = "/",
+}) {
   const [nome, setNome] = useState(turmaInicial?.nome || "");
-  const [modalidade, setModalidade] = useState(turmaInicial?.modalidade || "Musculação");
+  const [modalidadeId, setModalidadeId] = useState(
+    turmaInicial?.modalidade_id || modalidades[0]?.id || ""
+  );
   const [professor, setProfessor] = useState(turmaInicial?.professor || "");
   const [diasSemana, setDiasSemana] = useState(turmaInicial?.dias_semana || "");
   const [horario, setHorario] = useState(turmaInicial?.horario || "");
-  const [vagas, setVagas] = useState(turmaInicial?.vagas ? String(turmaInicial.vagas) : "");
+  const [vagas, setVagas] = useState(
+    turmaInicial?.vagas ? String(turmaInicial.vagas) : ""
+  );
   const [nivel, setNivel] = useState(turmaInicial?.nivel || "iniciante");
+  const [erro, setErro] = useState("");
+  const [enviando, setEnviando] = useState(false);
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault();
+    setErro("");
+    setEnviando(true);
 
-    const modEncontrada = MODALIDADES.find((m) => m.nome === modalidade);
-
-    aoSalvar({
-      nome,
-      modalidade,
-      modalidade_id: modEncontrada ? modEncontrada.id : 1,
-      professor,
-      dias_semana: diasSemana,
-      horario,
-      vagas: Number(vagas) || 0,
-      nivel,
-    });
+    try {
+      await aoSalvar({
+        nome,
+        modalidade_id: Number(modalidadeId),
+        professor,
+        dias_semana: diasSemana,
+        horario,
+        vagas: Number(vagas) || 0,
+        nivel,
+      });
+    } catch (e) {
+      setErro(e.message);
+      setEnviando(false);
+    }
   }
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <form onSubmit={handleSubmit} className={styles.form} noValidate>
+      <Mensagem tipo="erro">{erro}</Mensagem>
+
       <div className={styles.campo}>
         <label htmlFor="nome" className={styles.label}>
           Nome da turma
@@ -62,12 +71,12 @@ export default function FormTurma({ turmaInicial = null, aoSalvar, linkCancelar 
           </label>
           <select
             id="modalidade"
-            value={modalidade}
-            onChange={(e) => setModalidade(e.target.value)}
+            value={modalidadeId}
+            onChange={(e) => setModalidadeId(Number(e.target.value))}
             className={styles.select}
           >
-            {MODALIDADES.map((mod) => (
-              <option key={mod.id} value={mod.nome}>
+            {modalidades.map((mod) => (
+              <option key={mod.id} value={mod.id}>
                 {mod.nome}
               </option>
             ))}
@@ -152,8 +161,12 @@ export default function FormTurma({ turmaInicial = null, aoSalvar, linkCancelar 
         <Link href={linkCancelar} className={styles.btnCancelar}>
           Cancelar
         </Link>
-        <button type="submit" className={styles.btnSalvar}>
-          {turmaInicial ? "Salvar alterações" : "Cadastrar turma"}
+        <button type="submit" disabled={enviando} className={styles.btnSalvar}>
+          {enviando
+            ? "Salvando..."
+            : turmaInicial
+              ? "Salvar alterações"
+              : "Cadastrar turma"}
         </button>
       </div>
     </form>

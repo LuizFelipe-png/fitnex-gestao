@@ -1,31 +1,61 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { turmasExemplo } from "@/dados/exemplo";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Carregando from "@/components/Carregando/Carregando";
 import FormTurma from "@/components/FormTurma/FormTurma";
+import Mensagem from "@/components/Mensagem/Mensagem";
+import RotaProtegida from "@/components/RotaProtegida/RotaProtegida";
+import { criarTurma, listarModalidades } from "@/lib/banco";
 
-export default function NovaTurma() {
+function ConteudoNovaTurma() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const modalidadeIdUrl = searchParams.get("modalidadeId") || "";
 
-  function handleCriar(dadosNovaTurma) {
-    const salvas = localStorage.getItem("fitnex_turmas");
-    const lista = salvas ? JSON.parse(salvas) : turmasExemplo;
+  const [modalidades, setModalidades] = useState([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState("");
 
-    const novoId =
-      lista.length > 0 ? Math.max(...lista.map((t) => Number(t.id))) + 1 : 1;
+  useEffect(() => {
+    listarModalidades()
+      .then((lista) => setModalidades(lista))
+      .catch((e) => setErro(e.message))
+      .finally(() => setCarregando(false));
+  }, []);
 
-    const atualizada = [...lista, { id: novoId, ...dadosNovaTurma }];
-    localStorage.setItem("fitnex_turmas", JSON.stringify(atualizada));
-
-    router.push("/");
+  async function handleCriar(dados) {
+    setErro("");
+    try {
+      const nova = await criarTurma(dados);
+      router.push(`/turmas/${nova.id}`);
+    } catch (e) {
+      setErro(e.message);
+    }
   }
 
+  if (carregando) return <Carregando />;
+
   return (
-    <main style={{ maxWidth: "700px", margin: "0 auto", padding: "32px 20px" }}>
-      <h1 style={{ fontSize: "1.6rem", fontWeight: 800, marginBottom: "20px" }}>
-        Nova Turma
-      </h1>
-      <FormTurma aoSalvar={handleCriar} linkCancelar="/" />
+    <main style={{ maxWidth: 640, margin: "2rem auto", padding: "0 1rem" }}>
+      <h1>Nova Turma</h1>
+      <Mensagem tipo="erro">{erro}</Mensagem>
+      <FormTurma
+        modalidades={modalidades}
+        valoresIniciais={{ modalidade_id: modalidadeIdUrl }}
+        textoBotao="Cadastrar turma"
+        onEnviar={handleCriar}
+      />
     </main>
+  );
+}
+
+export default function NovaTurmaPage() {
+  return (
+    <RotaProtegida>
+      <Suspense fallback={<Carregando />}>
+        <ConteudoNovaTurma />
+      </Suspense>
+    </RotaProtegida>
   );
 }

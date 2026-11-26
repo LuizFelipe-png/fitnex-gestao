@@ -1,10 +1,11 @@
-import styles from "./filtro.module.css";
+import styles from "./Filtro.module.css";
 
 export default function Filtro({
+  modalidades = [],
+  modalidadeId,
+  setModalidadeId,
   busca,
   setBusca,
-  modalidade,
-  setModalidade,
   dia,
   setDia,
 }) {
@@ -19,17 +20,16 @@ export default function Filtro({
       />
 
       <select
-        value={modalidade}
-        onChange={(e) => setModalidade(e.target.value)}
+        value={modalidadeId}
+        onChange={(e) => setModalidadeId(Number(e.target.value))}
         className={styles.select}
       >
-        <option value="">Todas as modalidades</option>
-        <option value="Musculação">Musculação</option>
-        <option value="Pilates">Pilates</option>
-        <option value="Spinning">Spinning</option>
-        <option value="Muay Thai">Muay Thai</option>
-        <option value="Jiu-Jitsu">Jiu-Jitsu</option>
-        <option value="Funcional">Funcional</option>
+        <option value={0}>Todas as modalidades</option>
+        {modalidades.map((mod) => (
+          <option key={mod.id} value={mod.id}>
+            {mod.nome}
+          </option>
+        ))}
       </select>
 
       <select

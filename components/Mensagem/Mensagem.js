@@ -1,11 +1,12 @@
-import styles from "./mensagem.module.css";
+import styles from "./Mensagem.module.css";
 
-export default function Mensagem({ tipo = "info", texto }) {
-  if (!texto) return null;
+export default function Mensagem({ tipo = "info", texto, children }) {
+  const conteudo = texto || children;
+  if (!conteudo) return null;
 
   return (
-    <div className={`${styles.box} ${styles[tipo] || ""}`} role="alert">
-      {texto}
+    <div className={`${styles.mensagem} ${styles[tipo] || styles.info}`}>
+      {conteudo}
     </div>
   );
 }
