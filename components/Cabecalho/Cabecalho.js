@@ -34,6 +34,7 @@ export default function Cabecalho({ usuario, onSair }) {
           <span className={styles.logoIcone}>⚡</span>
           <span>FitNex</span>
         </Link>
+        <Link href="/modalidades">Modalidades</Link>
 
         <nav className={styles.nav}>
           <Link href="/" className={styles.link}>

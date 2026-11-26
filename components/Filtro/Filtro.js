@@ -1,36 +1,49 @@
 import styles from "./filtro.module.css";
 
-const DIAS = [
-  { valor: "", label: "Todos os dias" },
-  { valor: "seg", label: "Segunda" },
-  { valor: "ter", label: "Terça" },
-  { valor: "qua", label: "Quarta" },
-  { valor: "qui", label: "Quinta" },
-  { valor: "sex", label: "Sexta" },
-  { valor: "sab", label: "Sábado" },
-];
-
-export default function Filtro({ dia, onMudarDia, busca, onMudarBusca }) {
+export default function Filtro({
+  busca,
+  setBusca,
+  modalidade,
+  setModalidade,
+  dia,
+  setDia,
+}) {
   return (
     <div className={styles.filtroBox}>
       <input
         type="text"
-        placeholder="Pesquisar turma..."
         value={busca}
-        onChange={(e) => onMudarBusca(e.target.value)}
+        onChange={(e) => setBusca(e.target.value)}
+        placeholder="Pesquisar turma ou professor..."
         className={styles.input}
       />
 
       <select
-        value={dia}
-        onChange={(e) => onMudarDia(e.target.value)}
+        value={modalidade}
+        onChange={(e) => setModalidade(e.target.value)}
         className={styles.select}
       >
-        {DIAS.map((d) => (
-          <option key={d.valor} value={d.valor}>
-            {d.label}
-          </option>
-        ))}
+        <option value="">Todas as modalidades</option>
+        <option value="Musculação">Musculação</option>
+        <option value="Pilates">Pilates</option>
+        <option value="Spinning">Spinning</option>
+        <option value="Muay Thai">Muay Thai</option>
+        <option value="Jiu-Jitsu">Jiu-Jitsu</option>
+        <option value="Funcional">Funcional</option>
+      </select>
+
+      <select
+        value={dia}
+        onChange={(e) => setDia(e.target.value)}
+        className={styles.select}
+      >
+        <option value="">Todos os dias</option>
+        <option value="seg">Segunda</option>
+        <option value="ter">Terça</option>
+        <option value="qua">Quarta</option>
+        <option value="qui">Quinta</option>
+        <option value="sex">Sexta</option>
+        <option value="sab">Sábado</option>
       </select>
     </div>
   );
