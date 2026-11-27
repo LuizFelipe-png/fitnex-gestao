@@ -44,7 +44,7 @@ function ConteudoNovaTurma() {
         modalidades={modalidades}
         valoresIniciais={{ modalidade_id: modalidadeIdUrl }}
         textoBotao="Cadastrar turma"
-        onEnviar={handleCriar}
+        aoSalvar={handleCriar}
       />
     </main>
   );

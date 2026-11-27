@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { sair, useSessao } from "@/lib/sessao";
-import styles from "./Cabecalho.module.css";
+import styles from "./cabecalho.module.css";
 
 export default function Cabecalho() {
   const router = useRouter();

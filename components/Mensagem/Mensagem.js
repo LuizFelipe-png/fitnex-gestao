@@ -1,4 +1,4 @@
-import styles from "./Mensagem.module.css";
+import styles from "./mensagem.module.css";
 
 export default function Mensagem({ tipo = "info", texto, children }) {
   const conteudo = texto || children;

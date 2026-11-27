@@ -1,4 +1,4 @@
-import styles from "./Filtro.module.css";
+import styles from "./filtro.module.css";
 
 export default function Filtro({
   modalidades = [],
